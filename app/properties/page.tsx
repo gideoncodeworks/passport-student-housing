@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { MapPin, Home, Users, Filter, X } from "lucide-react";
 import { properties, Property } from "@/lib/properties";
 
-export default function PropertiesPage() {
+function PropertiesContent() {
   const searchParams = useSearchParams();
   const initialNeighborhood = searchParams.get("neighborhood") || "";
 
@@ -206,5 +206,31 @@ export default function PropertiesPage() {
         )}
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-blue-900 text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-4xl font-bold mb-4">Available Properties</h1>
+          <p className="text-xl text-blue-200">Loading properties...</p>
+        </div>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="flex justify-center">
+          <div className="w-12 h-12 border-4 border-blue-800 border-t-transparent rounded-full animate-spin" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function PropertiesPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <PropertiesContent />
+    </Suspense>
   );
 }
