@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Send, CheckCircle, ArrowLeft, User, Home, Briefcase, AlertCircle } from "lucide-react";
 import { useSiteData } from "@/lib/site-context";
 import { properties } from "@/lib/properties";
 
-export default function ApplyPage() {
+function ApplyForm() {
   const siteData = useSiteData();
   const searchParams = useSearchParams();
   const preselectedProperty = searchParams.get("property") || "";
@@ -839,5 +839,24 @@ export default function ApplyPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-12 h-12 border-4 border-blue-800 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-gray-600">Loading application...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function ApplyPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ApplyForm />
+    </Suspense>
   );
 }
